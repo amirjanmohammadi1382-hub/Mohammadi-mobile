@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>محمدی موبایل</title>
+
+<style>
+*{box-sizing:border-box}
+body{
+ margin:0;
+ background:linear-gradient(145deg,#e7f5ed,#e9edff,#fff1e7);
+ color:#183b30;
+ font-family:Tahoma,Arial;
+}
+header{
+ padding:28px 20px;
+ color:white;
+ background:linear-gradient(125deg,#064e3b,#059669,#16b8a0);
+ border-radius:0 0 30px 30px;
+ box-shadow:0 10px 25px #04785755;
+ position:relative;
+ overflow:hidden;
+}
+header:after{
+ content:"";
+ position:absolute;
+ width:170px;height:170px;
+ border-radius:50%;
+ background:#ffffff20;
+ left:-35px;top:-65px;
+}
+header h2{font-size:25px;margin:0;position:relative}
+header p{font-size:12px;opacity:.9;position:relative}
+.container{padding:17px}
+.cards{
+ display:grid;
+ grid-template-columns:1fr 1fr;
+ gap:13px;
+}
+.card{
+ border-radius:21px;
+ padding:19px 13px;
+ background:linear-gradient(145deg,#fff,#edf8f1);
+ box-shadow:7px 7px 15px #183b3018,-5px -5px 13px #ffffffb8;
+ border:1px solid #ffffff;
+}
+.card:nth-child(2){background:linear-gradient(145deg,#fff,#e7edff)}
+.card:nth-child(3){background:linear-gradient(145deg,#fff,#fff0d9)}
+.card:nth-child(4){background:linear-gradient(145deg,#fff,#f2e7ff)}
+.card b{font-size:12px;color:#49675a}
+.card strong{display:block;font-size:20px;margin-top:12px;color:#078451}
+.card:nth-child(2) strong{color:#4169ce}
+.card:nth-child(3) strong{color:#c08019}
+.card:nth-child(4) strong{color:#8755c5}
+.menu{
+ display:grid;
+ grid-template-columns:repeat(3,1fr);
+ gap:12px;margin:22px 0;
+}
+.menu button{
+ border:1px solid #ffffff;
+ border-radius:19px;
+ padding:17px 5px;
+ background:linear-gradient(145deg,#fff,#eaf5ee);
+ box-shadow:5px 6px 12px #183b3020,-3px -3px 8px white;
+ color:#174b35;
+ font-size:12px;font-weight:bold;
+ transition:.2s;
+}
+.menu button:active{transform:scale(.94)}
+.menu button span{
+ display:block;font-size:29px;margin-bottom:9px;
+ filter:drop-shadow(2px 3px 2px #0002);
+}
+.panel{
+ display:none;background:#ffffffed;
+ padding:19px;border-radius:23px;
+ margin-top:15px;
+ box-shadow:0 9px 24px #183b3018;
+ border:1px solid white;
+}
+.panel.active{display:block}
+h3{color:#087849;font-size:18px}
+input,select{
+ width:100%;padding:14px;margin:7px 0 13px;
+ border:1px solid #d9e9df;border-radius:13px;
+ background:#f5faf6;font-size:14px;
+ outline:none;
+}
+input:focus{border-color:#0b9c66;box-shadow:0 0 0 3px #0b9c6618}
+label{font-size:12px;font-weight:bold;color:#456354}
+.action{
+ width:100%;padding:15px;
+ background:linear-gradient(120deg,#047857,#10b981);
+ color:white;border:0;border-radius:14px;
+ font-size:14px;font-weight:bold;
+ box-shadow:0 6px 13px #05966940;
+}
+.secondary{background:linear-gradient(120deg,#4263c9,#7588ed)}
+.result{
+ background:linear-gradient(120deg,#dcfce7,#e0f2fe);
+ padding:14px;border-radius:14px;
+ margin:12px 0;font-size:13px;line-height:2;
+}
+table{
+ width:100%;border-collapse:collapse;
+ font-size:11px;margin-top:13px;
+ background:white;border-radius:12px;overflow:hidden;
+}
+td,th{border:1px solid #e1ebe4;padding:9px;text-align:center}
+th{background:#e0f4e8;color:#176442}
+.small{font-size:11px;color:#718477}
+</style>
+
+</head>
+
+<body>
+  <header>
+    <h2>📱 محمدی موبایل</h2>
+    <p>سیستم مدیریت فروشگاه | نسخه آفلاین</p>
+  </header>
+
+  <div class="container">
+    <div class="cards">
+      <div class="card"><b>💰 مجموع فروش</b><strong id="totalSales">0</strong></div>
+      <div class="card"><b>📈 مفاد فروش</b><strong id="totalProfit">0</strong></div>
+      <div class="card"><b>💵 پول دخل</b><strong id="cash">0</strong></div>
+      <div class="card"><b>📒 قرض مشتریان</b><strong id="debt">0</strong></div>
+    </div>
+
+    <div class="menu">
+      <button onclick="show('sale')"><span>🛒</span>فروش</button>
+      <button onclick="show('stock')"><span>📦</span>موجودی</button>
+      <button onclick="show('expense')"><span>💸</span>مصارف</button>
+      <button onclick="show('repair')"><span>🔧</span>ترمیمات</button>
+      <button onclick="show('music')"><span>🎵</span>موزیک</button>
+      <button onclick="show('photo')"><span>📸</span>عکاسی</button>
+      <button onclick="show('debts')"><span>📒</span>قرض‌ها</button>
+      <button onclick="show('report')"><span>📊</span>گزارش</button>
+      <button onclick="backup()"><span>💾</span>پشتیبان</button>
+    </div>
+
+    <div id="sale" class="panel active">
+      <h3>🛒 ثبت فروش جدید</h3>
+      <label>نام جنس</label><input id="sname" placeholder="نام جنس">
+      <label>تعداد</label><input id="sqty" type="number" value="1">
+      <label>قیمت خرید فی دانه</label><input id="buy" type="number" placeholder="افغانی">
+      <label>قیمت فروش فی دانه</label><input id="sell" type="number" placeholder="افغانی">
+      <label>مبلغ واپس</label><input id="returned" type="number" value="0">
+      <label>مبلغ قرض مشتری</label><input id="credit" type="number" value="0">
+      <label>نام مشتری</label><input id="customer" placeholder="نام مشتری">
+      <div class="result" id="preview">مفاد و پول دریافتی: 0</div>
+      <button class="action" onclick="addSale()">ثبت فروش</button>
+      <div id="salesList"></div>
+    </div>
+
+    <div id="stock" class="panel">
+      <h3>📦 موجودی اجناس</h3>
+      <label>نام جنس</label><input id="pname">
+      <label>تعداد موجود</label><input id="pqty" type="number">
+      <label>قیمت خرید</label><input id="pprice" type="number">
+      <button class="action" onclick="addStock()">ثبت جنس</button>
+      <div id="stockList"></div>
+    </div>
+
+    <div id="expense" class="panel">
+      <h3>💸 ثبت مصارف</h3>
+      <label>شرح مصرف</label><input id="ename">
+      <label>مبلغ مصرف</label><input id="eamount" type="number">
+      <button class="action" onclick="addExpense()">ثبت مصرف</button>
+      <div id="expenseList"></div>
+    </div>
+
+    <div id="repair" class="panel">
+      <h3>🔧 درآمد ترمیمات</h3>
+      <label>نام مشتری / موبایل</label><input id="rname">
+      <label>نوع ترمیم</label><input id="rwork">
+      <label>قیمت ترمیم</label><input id="ramount" type="number">
+      <button class="action" onclick="addIncome('repair')">ثبت درآمد ترمیم</button>
+      <div id="repairList"></div>
+    </div>
+
+    <div id="music" class="panel">
+      <h3>🎵 درآمد موزیک</h3>
+      <label>درآمد امروز</label><input id="mamount" type="number">
+      <button class="action" onclick="addIncome('music')">ثبت درآمد</button>
+      <div id="musicList"></div>
+    </div>
+
+    <div id="photo" class="panel">
+      <h3>📸 درآمد عکاسی</h3>
+      <label>درآمد امروز</label><input id="phamount" type="number">
+      <button class="action" onclick="addIncome('photo')">ثبت درآمد</button>
+      <div id="photoList"></div>
+    </div>
+
+    <div id="debts" class="panel">
+      <h3>📒 قرض‌های مشتریان</h3>
+      <div id="debtList"></div>
+    </div>
+
+    <div id="report" class="panel">
+      <h3>📊 گزارش حسابات</h3>
+      <div id="reportContent"></div>
+      <button class="action secondary" onclick="backup()">دانلود پشتیبان معلومات</button>
+    </div>
+  </div>
+
+  <script>
+const load=k=>JSON.parse(localStorage.getItem(k)||'[]');
+const save=(k,v)=>localStorage.setItem(k,JSON.stringify(v));
+let sales=load('sales'),stock=load('stock'),expenses=load('expenses');
+let repair=load('repair'),music=load('music'),photo=load('photo');
+
+function show(id){
+ document.querySelectorAll('.panel').forEach(x=>x.classList.remove('active'));
+ document.getElementById(id).classList.add('active');
+ render();
+}
+function num(id){return Number(document.getElementById(id).value)||0}
+function money(n){return Math.round(n).toLocaleString('en-US')+' افغانی'}
+function date(){return new Date().toLocaleDateString('fa-AF')}
+function addSale(){
+ let name=sname.value.trim(),qty=num('sqty'),b=num('buy'),s=num('sell'),ret=num('returned'),cr=num('credit');
+ if(!name||qty<=0||b<0||s<0||ret<0||cr<0){alert('معلومات فروش را درست وارد کن');return}
+ let total=s*qty,cost=b*qty;
+ if(ret+cr>total){alert('واپس و قرض نمی‌تواند از مجموع فروش بیشتر باشد');return}
+ sales.push({name,qty,b,s,total,cost,ret,cr,cash:total-ret-cr,customer:customer.value,date:date()});
+ save('sales',sales);
+ ['sname','buy','sell','returned','credit','customer'].forEach(id=>document.getElementById(id).value='');
+ sqty.value=1;render();alert('فروش ثبت شد');
+}
+function addStock(){
+ if(!pname.value.trim()||num('pqty')<=0){alert('نام و تعداد را وارد کن');return}
+ stock.push({name:pname.value,qty:num('pqty'),price:num('pprice'),date:date()});
+ save('stock',stock);pname.value='';pqty.value='';pprice.value='';render();
+}
+function addExpense(){
+ if(!ename.value.trim()||num('eamount')<=0)return alert('معلومات مصرف را وارد کن');
+ expenses.push({name:ename.value,amount:num('eamount'),date:date()});
+ save('expenses',expenses);ename.value='';eamount.value='';render();
+}
+function addIncome(type){
+ let id=type==='repair'?'ramount':type==='music'?'mamount':'phamount';
+ let amount=num(id);if(amount<=0)return alert('مبلغ را وارد کن');
+ let item={amount,date:date()};
+ if(type==='repair'){item.name=rname.value;item.work=rwork.value;repair.push(item);save('repair',repair)}
+ if(type==='music'){music.push(item);save('music',music)}
+ if(type==='photo'){photo.push(item);save('photo',photo)}
+ document.getElementById(id).value='';
+ render();
+}
+function total(arr,key){return arr.reduce((a,x)=>a+(Number(x[key])||0),0)}
+function render(){
+ let ts=total(sales,'total'),tp=sales.reduce((a,x)=>a+x.total-x.cost-x.ret,0);
+ let tc=total(sales,'cash')+total(repair,'amount')+total(music,'amount')+total(photo,'amount')-total(expenses,'amount');
+ document.getElementById('totalSales').textContent=money(ts);
+ document.getElementById('totalProfit').textContent=money(tp);
+ document.getElementById('cash').textContent=money(tc);
+ document.getElementById('debt').textContent=money(total(sales,'cr'));
+ salesList.innerHTML=table(['جنس','تعداد','فروش','مفاد','واپس','قرض'],sales.map(x=>[x.name,x.qty,money(x.total),money(x.total-x.cost-x.ret),money(x.ret),money(x.cr)]));
+ stockList.innerHTML=table(['جنس','تعداد','قیمت'],stock.map(x=>[x.name,x.qty,money(x.price)]));
+ expenseList.innerHTML=table(['شرح','مبلغ','تاریخ'],expenses.map(x=>[x.name,money(x.amount),x.date]));
+ repairList.innerHTML=table(['نام','ترمیم','درآمد'],repair.map(x=>[x.name||'',x.work||'',money(x.amount)]));
+ musicList.innerHTML=table(['تاریخ','درآمد'],music.map(x=>[x.date,money(x.amount)]));
+ photoList.innerHTML=table(['تاریخ','درآمد'],photo.map(x=>[x.date,money(x.amount)]));
+ debtList.innerHTML=table(['مشتری','جنس','قرض','تاریخ'],sales.filter(x=>x.cr>0).map(x=>[x.customer,x.name,money(x.cr),x.date]));
+ reportContent.innerHTML='<p>مجموع فروش: '+money(ts)+'</p><p>مفاد فروش: '+money(tp)+'</p><p>مجموع واپس: '+money(total(sales,'ret'))+'</p><p>مجموع قرض: '+money(total(sales,'cr'))+'</p><p>درآمد ترمیمات: '+money(total(repair,'amount'))+'</p><p>درآمد موزیک: '+money(total(music,'amount'))+'</p><p>درآمد عکاسی: '+money(total(photo,'amount'))+'</p><p>مصارف: '+money(total(expenses,'amount'))+'</p><p>پول نقد تخمینی: '+money(tc)+'</p>';
+}
+function table(headers,rows){
+ if(!rows.length)return '<p class="small">هنوز معلومات ثبت نشده است.</p>';
+ return '<table><tr>'+headers.map(x=>'<th>'+x+'</th>').join('')+'</tr>'+rows.map(r=>'<tr>'+r.map(x=>'<td>'+x+'</td>').join('')+'</tr>').join('')+'</table>';
+}
+function backup(){
+ let data={sales,stock,expenses,repair,music,photo};
+ let blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});
+ let a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='MohammadiMobile-Backup.json';a.click();
+}
+['sqty','buy','sell','returned','credit'].forEach(id=>document.getElementById(id).addEventListener('input',()=>{
+ let total=num('sqty')*num('sell'),cost=num('sqty')*num('buy');
+ preview.textContent='مفاد: '+money(total-cost-num('returned'))+' | پول دریافتی: '+money(total-num('returned')-num('credit'));
+}));
+render();
+</script>
+</body>
+
+</html>
