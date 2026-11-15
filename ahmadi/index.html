@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#087f5b"><meta name="description" content="برنامه آفلاین حسابداری سوپر مارکیت احمدی">
+<link rel="manifest" href="./manifest.webmanifest">
+<title>سوپر مارکیت احمدی</title>
+<style>
+:root{--green:#087f5b;--dark:#07533f;--bg:#f2f7f4;--ink:#18352b;--muted:#668176;--line:#dce9e1}
+*{box-sizing:border-box}body{margin:0;background:linear-gradient(145deg,#e7f5ed,#f7faf8);font-family:Tahoma,Arial,sans-serif;color:var(--ink)}
+header{background:linear-gradient(120deg,#07533f,#0b9b70);color:white;padding:24px 16px 30px;border-radius:0 0 26px 26px;box-shadow:0 8px 24px #07533f26}
+.wrap{max-width:1050px;margin:auto;padding:0 14px}h1{margin:0;font-size:26px}header p{margin:8px 0 0;color:#d8f5e8;font-size:13px}
+main{max-width:1050px;margin:18px auto;padding:0 14px 40px}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:-12px}.stat{background:white;border:1px solid var(--line);border-radius:16px;padding:15px;box-shadow:0 5px 18px #164c3010}.stat small{display:block;color:var(--muted);font-size:12px}.stat strong{display:block;font-size:20px;margin-top:8px;direction:ltr;text-align:right}.stat.profit strong{color:#07845b}
+.panel{background:white;border:1px solid var(--line);border-radius:18px;padding:18px;margin-top:16px;box-shadow:0 5px 20px #164c300b}.panel h2{font-size:17px;margin:0 0 14px}
+.formgrid{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:10px}.field label{display:block;font-size:12px;color:var(--muted);margin:0 0 6px}.field input{width:100%;border:1px solid #cdded4;border-radius:11px;padding:12px;font:inherit;outline:none;background:#fbfdfb}.field input:focus{border-color:var(--green);box-shadow:0 0 0 3px #087f5b18}
+.actions{display:flex;gap:9px;flex-wrap:wrap;margin-top:13px}button{border:0;border-radius:11px;padding:11px 17px;font:inherit;font-weight:bold;cursor:pointer}.primary{background:var(--green);color:white}.secondary{background:#e8f4ed;color:var(--dark)}.danger{background:#fff0ef;color:#b42318;padding:7px 10px}
+.tablewrap{overflow:auto}table{width:100%;border-collapse:collapse;min-width:650px}th,td{text-align:right;padding:12px 10px;border-bottom:1px solid #edf2ee;font-size:13px}th{background:#f1f8f4;color:#45675a;white-space:nowrap}td.num{direction:ltr;text-align:right;font-variant-numeric:tabular-nums}.empty{text-align:center;color:#81958b;padding:28px}
+.search{max-width:300px;width:100%;border:1px solid var(--line);border-radius:10px;padding:10px;font:inherit}.topline{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:12px}
+.note{font-size:12px;color:var(--muted);line-height:1.8;margin-top:12px}
+@media(max-width:650px){.stats{grid-template-columns:1fr}.formgrid{grid-template-columns:1fr 1fr}h1{font-size:22px}.stat{padding:12px}.stat strong{font-size:18px}}
+</style></head>
+<body>
+<header><div class="wrap"><h1>🛒 سوپر مارکیت احمدی</h1><p>سیستم ساده ثبت فروشات و محاسبه مفاد — قابل استفاده بدون انترنت</p></div></header>
+<main>
+<section class="stats">
+<div class="stat"><small>جمع خرید</small><strong id="buyTotal">0</strong></div>
+<div class="stat"><small>جمع فروش</small><strong id="sellTotal">0</strong></div>
+<div class="stat profit"><small>مجموع مفاد</small><strong id="profitTotal">0</strong></div>
+</section>
+<section class="panel">
+<h2>➕ ثبت فروش جنس</h2>
+<form id="saleForm">
+<div class="formgrid">
+<div class="field"><label for="product">نام جنس</label><input id="product" required placeholder="مثلاً روغن ۵ لیتر"></div>
+<div class="field"><label for="qty">تعداد</label><input id="qty" type="number" min="1" step="1" value="1" required></div>
+<div class="field"><label for="buy">قیمت خرید فی دانه</label><input id="buy" type="number" min="0" step="any" required placeholder="0"></div>
+<div class="field"><label for="sell">قیمت فروش فی دانه</label><input id="sell" type="number" min="0" step="any" required placeholder="0"></div>
+</div>
+<div class="actions"><button class="primary" type="submit">ثبت و محاسبه</button><button class="secondary" type="reset">پاک کردن خانه‌ها</button></div>
+</form>
+<p class="note">مفاد هر جنس به‌صورت اتومات محاسبه می‌شود: (قیمت فروش − قیمت خرید) × تعداد. جمع خرید و فروش نیز با ثبت هر ردیف به‌روز می‌شود.</p>
+</section>
+<section class="panel">
+<div class="topline"><h2>📋 لیست فروشات</h2><input class="search" id="search" placeholder="جستجوی نام جنس..."></div>
+<div class="tablewrap"><table><thead><tr><th>تاریخ</th><th>نام جنس</th><th>تعداد</th><th>قیمت خرید</th><th>قیمت فروش</th><th>جمع خرید</th><th>جمع فروش</th><th>مفاد</th><th>عملیات</th></tr></thead><tbody id="rows"></tbody></table></div>
+<div class="actions"><button class="secondary" id="export">دانلود گزارش CSV</button><button class="secondary" id="backup">پشتیبان معلومات</button></div>
+</section>
+<p class="note">معلومات در همین دستگاه ذخیره می‌شود. برای انتقال به دستگاه دیگر، از پشتیبان معلومات استفاده کن. پاک‌کردن داده‌های مرورگر ممکن است معلومات را حذف کند.</p>
+</main>
+<script>
+const KEY='ahmadi_supermarket_sales_v1';
+let records=[];try{records=JSON.parse(localStorage.getItem(KEY)||'[]')}catch(e){records=[]}
+const $=id=>document.getElementById(id);
+const fmt=n=>Number(n||0).toLocaleString('en-US',{maximumFractionDigits:2});
+function save(){localStorage.setItem(KEY,JSON.stringify(records));render()}
+function render(){
+ const buy=records.reduce((s,r)=>s+r.qty*r.buy,0), sell=records.reduce((s,r)=>s+r.qty*r.sell,0);
+ $('buyTotal').textContent=fmt(buy);$('sellTotal').textContent=fmt(sell);$('profitTotal').textContent=fmt(sell-buy);
+ const q=$('search').value.trim().toLowerCase();
+ const list=records.filter(r=>r.name.toLowerCase().includes(q));
+ $('rows').innerHTML=list.length?list.map(r=>{const i=records.indexOf(r),b=r.qty*r.buy,s=r.qty*r.sell;return '<tr><td>'+r.date+'</td><td>'+esc(r.name)+'</td><td class="num">'+fmt(r.qty)+'</td><td class="num">'+fmt(r.buy)+'</td><td class="num">'+fmt(r.sell)+'</td><td class="num">'+fmt(b)+'</td><td class="num">'+fmt(s)+'</td><td class="num">'+fmt(s-b)+'</td><td><button class="danger" data-del="'+i+'">حذف</button></td></tr>'}).join(''):'<tr><td colspan="9" class="empty">هنوز فروشی ثبت نشده است</td></tr>';
+}
+function esc(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+$('saleForm').addEventListener('submit',e=>{e.preventDefault();const name=$('product').value.trim(),qty=Number($('qty').value),buy=Number($('buy').value),sell=Number($('sell').value);if(!name||qty<=0||buy<0||sell<0)return;records.unshift({name,qty,buy,sell,date:new Date().toLocaleDateString('fa-AF')});save();$('saleForm').reset();$('qty').value=1;$('product').focus()});
+$('rows').addEventListener('click',e=>{const b=e.target.closest('[data-del]');if(!b)return;const i=Number(b.dataset.del);if(confirm('این ردیف حذف شود؟')){records.splice(i,1);save()}});
+$('search').addEventListener('input',render);
+$('export').addEventListener('click',()=>{const head=['Date','Product','Quantity','Purchase price','Sale price','Purchase total','Sales total','Profit'];const data=records.map(r=>[r.date,r.name,r.qty,r.buy,r.sell,r.qty*r.buy,r.qty*r.sell,r.qty*(r.sell-r.buy)]);const csv=[head,...data].map(row=>row.map(v=>'"'+String(v).replace(/"/g,'""')+'"').join(',')).join('\n');const a=document.createElement('a');a.href=URL.createObjectURL(new Blob(['\ufeff'+csv],{type:'text/csv;charset=utf-8'}));a.download='ahmadi-sales.csv';a.click();URL.revokeObjectURL(a.href)});
+$('backup').addEventListener('click',()=>{const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([JSON.stringify(records,null,2)],{type:'application/json'}));a.download='ahmadi-backup.json';a.click();URL.revokeObjectURL(a.href)});
+render();
+if('serviceWorker' in navigator)window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js').catch(()=>{}));
+</script></body></html>
