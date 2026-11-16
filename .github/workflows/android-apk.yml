@@ -28,6 +28,10 @@ jobs:
           java-version: "17"
       - name: Install dependencies
         run: npm install
+      - name: Prepare web assets
+        run: |
+          mkdir -p www
+          cp index.html manifest.json icon.svg sw.js www/
       - name: Generate Android project
         run: npx cap add android
       - name: Sync web app
