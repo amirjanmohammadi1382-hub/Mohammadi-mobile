@@ -216,7 +216,7 @@ document.addEventListener('touchend',e=>{if(!e.changedTouches||!swipeX)return;co
 <script type="module">
 import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js';
 (()=>{
- let renderer,scene,camera,raycaster,doors=[],roomKey='home',yaw=0,pitch=0,dist=0.08,drag=null,pinch=0,started=false,raf=0;
+ let renderer,scene,camera,raycaster,doors=[],roomKey='home',yaw=0,pitch=0,drag=null,pinch=0,started=false,raf=0,parkedPage=null,parkedMarker=null;
  const names={home:'اتاق فرماندهی',life:'اتاق زندگی',finance:'اتاق مالی',business:'اتاق تجارت',assistant:'اتاق هوش مصنوعی',characters:'اتاق شخصیت‌ها',vault:'اتاق اسناد خصوصی',learning:'اتاق یادگیری',security:'اتاق امنیت'};
  const rooms=['life','finance','business','assistant','characters','vault','learning','security'];
  const canvas=document.getElementById('amir3dCanvas'),root=document.getElementById('amirWorld');
@@ -224,7 +224,10 @@ import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.m
  const wallMat=mat(0x153a2b,.25),floorMat=mat(0x10271f,.3),goldMat=mat(0xc6a65e,.7,.28),glowMat=new THREE.MeshStandardMaterial({color:0x28d69a,emissive:0x08784b,emissiveIntensity:1.7,metalness:.25,roughness:.3});
  function box(w,h,d,m,x,y,z){const o=new THREE.Mesh(new THREE.BoxGeometry(w,h,d),m);o.position.set(x,y,z);scene.add(o);return o;}
  function labelTexture(txt){const c=document.createElement('canvas');c.width=512;c.height=128;const x=c.getContext('2d');x.fillStyle='#071a14';x.fillRect(0,0,512,128);x.strokeStyle='#d9bd78';x.lineWidth=5;x.strokeRect(4,4,504,120);x.fillStyle='#f4e6c2';x.font='bold 42px sans-serif';x.textAlign='center';x.textBaseline='middle';x.fillText(txt,256,65);const t=new THREE.CanvasTexture(c);t.colorSpace=THREE.SRGBColorSpace;return t;}
+ function restoreParked(){if(parkedPage&&parkedMarker){parkedMarker.parentNode.insertBefore(parkedPage,parkedMarker);parkedMarker.remove();parkedPage.classList.remove('active');parkedPage.style.display='';}parkedPage=null;parkedMarker=null;document.getElementById('worldPanel').classList.remove('open');}
+ function showModule(id){restoreParked();const page=document.getElementById(id);if(!page)return;parkedMarker=document.createComment('AMIR module position');page.parentNode.insertBefore(parkedMarker,page);parkedPage=page;page.classList.add('active');document.getElementById('worldPanelContent').replaceChildren(page);document.getElementById('worldPanel').classList.add('open');}
  function buildRoom(key){
+  if(parkedPage&&key==='home')restoreParked();
   roomKey=key;doors=[];scene.clear();scene.background=new THREE.Color(0x07130f);scene.fog=new THREE.Fog(0x07130f,12,29);
   scene.add(new THREE.HemisphereLight(0x9edfc0,0x08140f,2.0));
   const light=new THREE.PointLight(0x48dba0,34,18);light.position.set(0,3.5,0);scene.add(light);
@@ -249,7 +252,7 @@ import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.m
   const orb=new THREE.Mesh(new THREE.IcosahedronGeometry(.32,2),new THREE.MeshStandardMaterial({color:0x54e3ad,emissive:0x16865a,emissiveIntensity:1.4,metalness:.5,roughness:.2}));orb.position.set(0,1.1,-3.2);scene.add(orb);
   document.getElementById('worldRoomName').textContent=names[key]||'دنیای AMIR';
   // show active business module inside an in-world glass terminal when requested
-  if(key!=='home'){const page=document.getElementById(key);if(page){document.getElementById('worldPanelContent').replaceChildren(page.cloneNode(true));document.getElementById('worldPanel').classList.add('open');}}else document.getElementById('worldPanel').classList.remove('open');
+  if(key!=='home')showModule(key);else document.getElementById('worldPanel').classList.remove('open');
  }
  function openRoom(id){buildRoom(id);}
  function resize(){if(!renderer)return;const w=root.clientWidth,h=root.clientHeight;renderer.setSize(w,h,false);camera.aspect=w/h;camera.updateProjectionMatrix();}
@@ -262,6 +265,6 @@ import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.m
  let pinchStart=0,fovStart=72;
  canvas.addEventListener('touchstart',e=>{if(e.touches.length===2){pinchStart=Math.hypot(e.touches[0].clientX-e.touches[1].clientX,e.touches[0].clientY-e.touches[1].clientY);fovStart=camera.fov;}},{passive:true});
  canvas.addEventListener('touchmove',e=>{if(e.touches.length===2&&pinchStart){const d=Math.hypot(e.touches[0].clientX-e.touches[1].clientX,e.touches[0].clientY-e.touches[1].clientY);camera.fov=THREE.MathUtils.clamp(fovStart*pinchStart/d,42,82);camera.updateProjectionMatrix();e.preventDefault();}},{passive:false});
- document.getElementById('worldHomeBtn').onclick=()=>openRoom('home');
+ document.getElementById('worldHomeBtn').onclick=()=>{restoreParked();openRoom('home');};
 })();
 </script></body></html>
