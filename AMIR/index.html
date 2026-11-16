@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#071713"><meta name="description" content="AMIR؛ فضای دیجیتالی شخصی برای زندگی، کار و یادگیری">
-<link rel="manifest" href="./manifest.json?v=3"><link rel="icon" href="./icon.svg">
+<link rel="manifest" href="./manifest.json?v=4"><link rel="icon" href="./icon.svg">
 <title>AMIR | دنیای شخصی من</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;600;700;800&display=swap');
@@ -97,7 +97,7 @@ function backup(){let blob=new Blob([JSON.stringify(state,null,2)],{type:'applic
 $('backup').onclick=backup;$('backupTop').onclick=backup;$('restoreBtn').onclick=()=>$('restoreFile').click();
 $('restoreFile').onchange=async e=>{let f=e.target.files[0];if(!f)return;try{let x=JSON.parse(await f.text());if(!x||!Array.isArray(x.tasks)||!Array.isArray(x.notes)||!Array.isArray(x.finance))throw Error();state=Object.assign({},blank,x);state.permissions=Object.assign({},blank.permissions,x.permissions||{});save();$('backupStatus').textContent='بازیابی موفق بود.';}catch(err){alert('فایل پشتیبان معتبر نیست.');}e.target.value='';};
 addEventListener('online',render);addEventListener('offline',render);
-if('serviceWorker'in navigator)addEventListener('load',()=>navigator.serviceWorker.register('./sw.js?v=3').catch(()=>{}));
+if('serviceWorker'in navigator)addEventListener('load',()=>navigator.serviceWorker.register('./sw.js?v=4').catch(()=>{}));
 render();
 </script>
 <script>
