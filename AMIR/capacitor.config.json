@@ -1,0 +1,9 @@
+{
+  "appId": "com.amir.personal",
+  "appName": "AMIR",
+  "webDir": ".",
+  "server": {
+    "androidScheme": "https"
+  },
+  "plugins": {}
+}
