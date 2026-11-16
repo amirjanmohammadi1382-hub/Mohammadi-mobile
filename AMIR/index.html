@@ -70,6 +70,7 @@ html,body{overscroll-behavior:none}body{overflow-x:hidden}
 #amirWorld.visible{display:block}
 #amirWorld canvas{position:absolute;inset:0;width:100%;height:100%;display:block}
 #worldHud{position:absolute;inset:0;pointer-events:none;color:#f4f4e8;font-family:Vazirmatn,system-ui,sans-serif}
+#worldFallback{display:none;position:absolute;inset:0;z-index:2;overflow:auto;background:radial-gradient(ellipse at 50% 25%,#1d6548,#07140f 65%,#020805);perspective:900px;color:#f4f4e8;font-family:Vazirmatn,system-ui,sans-serif}#worldFallback.show{display:grid;place-items:center}#worldFallback .fallback-room{width:min(900px,94vw);padding:28px 18px;text-align:center;transform:rotateX(2deg);border:1px solid #c6a65e88;border-radius:26px;background:linear-gradient(145deg,#123c2bdf,#06150feF);box-shadow:0 25px 80px #0009,inset 0 0 45px #2bd89a18}#worldFallback .fallback-title{font-size:clamp(24px,5vw,40px);color:#e6cf91;font-weight:800}#worldFallback p{color:#c3d8cc;font-size:13px}#worldFallback .fallback-doors{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin:22px auto;max-width:720px}#worldFallback .fallback-doors button{min-height:90px;border:1px solid #d8bb78;background:linear-gradient(145deg,#1c6547,#09271b);color:#fff3cf;border-radius:16px;font:inherit;font-weight:700;box-shadow:0 8px 18px #0007;cursor:pointer}#worldFallback small{color:#a9c2b4}@media(max-width:600px){#worldFallback .fallback-doors{grid-template-columns:repeat(2,minmax(0,1fr))}#worldFallback .fallback-doors button{min-height:65px}}
 #worldTop{position:absolute;top:12px;left:14px;right:14px;display:flex;justify-content:space-between;align-items:center;gap:10px}
 #worldTop strong{font-size:15px;letter-spacing:3px;color:#e6cf91;text-shadow:0 2px 12px #000}
 #worldTop button,#worldHint{pointer-events:auto;border:1px solid #d8bb7866;background:#071a14d9;color:#f5e6bd;border-radius:14px;padding:9px 13px;font:inherit;font-size:11px;backdrop-filter:blur(12px)}
@@ -92,6 +93,7 @@ html,body{overscroll-behavior:none}body{overflow-x:hidden}
 
 <section id="amirWorld" aria-label="جهان سه بعدی AMIR">
  <canvas id="amir3dCanvas"></canvas>
+ <div id="worldFallback"><div class="fallback-room"><div class="fallback-title">دنیای AMIR</div><p>موتور سه‌بعدی بارگذاری نشد. فعلاً از این دروازه‌ها وارد بخش‌ها شو.</p><div class="fallback-doors"><button data-fallback-room="life">زندگی</button><button data-fallback-room="finance">مالی</button><button data-fallback-room="business">تجارت</button><button data-fallback-room="assistant">هوش مصنوعی</button><button data-fallback-room="characters">شخصیت‌ها</button><button data-fallback-room="vault">اسناد</button><button data-fallback-room="learning">یادگیری</button><button data-fallback-room="security">امنیت</button></div><small>برای نمای سه‌بعدی، اینترنت و پشتیبانی WebGL لازم است.</small></div></div>
  <div id="worldHud">
   <div id="worldTop"><strong>AMIR WORLD</strong><div><button id="worldHomeBtn">اتاق اصلی</button> <button id="worldExitBtn">خروج</button></div></div>
   <div id="worldRoomName">اتاق فرماندهی</div>
@@ -214,8 +216,8 @@ document.addEventListener('touchend',e=>{if(!e.changedTouches||!swipeX)return;co
 })();
 </script>
 <script type="module">
-import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js';
-(()=>{
+let THREE; try { THREE = await import('https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js'); } catch(e) { console.error('AMIR Three.js load failed',e); const f=document.getElementById('worldFallback'); if(f) f.classList.add('show'); document.querySelectorAll('[data-fallback-room]').forEach(b=>b.addEventListener('click',()=>{const id=b.dataset.fallbackRoom;document.getElementById('amirWorld').classList.remove('visible');document.querySelector('.app').style.display='';document.querySelector('.nav').style.display='';if(window.showPage)window.showPage(id);})); }
+if(THREE)(()=>{
  let renderer,scene,camera,raycaster,doors=[],roomKey='home',yaw=0,pitch=0,drag=null,pinch=0,started=false,raf=0,parkedPage=null,parkedMarker=null;
  const names={home:'اتاق فرماندهی',life:'اتاق زندگی',finance:'اتاق مالی',business:'اتاق تجارت',assistant:'اتاق هوش مصنوعی',characters:'اتاق شخصیت‌ها',vault:'اتاق اسناد خصوصی',learning:'اتاق یادگیری',security:'اتاق امنیت'};
  const rooms=['life','finance','business','assistant','characters','vault','learning','security'];
