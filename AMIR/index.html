@@ -42,10 +42,32 @@
 .webgl-ready .planet{display:none}
 .webgl-ready .ring{border-width:1.5px}
 @media(max-width:420px){.room-floor{background-size:17px 17px}}
+
+/* Cinematic touch-first room experience */
+html,body{overscroll-behavior:none}body{overflow-x:hidden}
+.app{max-width:none;width:100%;perspective:1200px}.top{max-width:100%;border-bottom-color:#dcbc7030}
+.page{min-height:calc(100svh - 70px);padding:clamp(12px,2vw,28px);transform-origin:center;transition:opacity .35s ease,transform .55s cubic-bezier(.2,.8,.2,1);touch-action:pan-y}
+.page.active{animation:roomReveal .75s cubic-bezier(.16,.8,.24,1) both}
+@keyframes roomReveal{0%{opacity:0;transform:perspective(1100px) translateZ(-180px) rotateY(7deg) scale(.94);filter:blur(5px)}100%{opacity:1;transform:perspective(1100px) translateZ(0) rotateY(0) scale(1);filter:blur(0)}}
+.page:before{inset:0 1% 18%;border-radius:26px;clip-path:polygon(8% 0,92% 0,100% 100%,0 100%);background:radial-gradient(ellipse at 50% 0%,#28bd8540,transparent 60%),linear-gradient(135deg,#164a35a0,#07171150);animation:roomGlow 9s ease-in-out infinite alternate}
+.page:after{height:43%;bottom:-3%;background-size:clamp(18px,3vw,34px) clamp(18px,3vw,34px);transform:perspective(260px) rotateX(58deg);opacity:.72;animation:floorDrift 18s linear infinite}
+@keyframes roomGlow{to{filter:hue-rotate(18deg) brightness(1.2)}}@keyframes floorDrift{to{background-position:0 34px,34px 0}}
+.page .hero,.page .panel,.page .stat,.page .tile{position:relative;transform-style:preserve-3d}
+.page .hero{border-radius:26px;transform:perspective(900px) rotateX(1.2deg);background:linear-gradient(135deg,#1b543b,#0a2018);border-color:#dcbc7060}
+.page .panel{border-color:#3d7456;background:linear-gradient(145deg,#153d2df2,#081a13f2);box-shadow:0 18px 40px #0008,inset 0 1px #ffffff18}
+.page .tile{min-height:120px;background:linear-gradient(145deg,#1b4936,#091d15);border-color:#4a805f;box-shadow:0 16px 28px #0008,inset 0 1px #ffffff16}
+.page .tile:before,.page .panel:before{content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;background:linear-gradient(125deg,#ffffff0d,transparent 40%,#22c98a08)}
+.page .tile:active{transform:perspective(800px) translateZ(-8px) scale(.97)}
+.page .item{background:linear-gradient(110deg,#0b2118,#102d20);border-color:#37634b}
+.room-label{position:fixed;z-index:11;top:76px;left:14px;padding:6px 11px;border:1px solid #dcbc7060;border-radius:30px;background:#06130fd9;color:#e9d49c;font-size:10px;pointer-events:none;opacity:0;transition:opacity .25s}
+.room-label.on{opacity:1}
+@media(orientation:landscape) and (max-height:520px){.top{height:48px;padding:5px 14px}.brand .mark{width:32px;height:32px}.page{min-height:calc(100svh - 55px);padding:10px 18px}.hero{min-height:110px;padding:14px 20px}.hero h1{font-size:23px}.nav{max-width:520px;left:auto;right:8px;bottom:8px;border:1px solid var(--line);border-radius:16px;grid-template-columns:repeat(5,58px);padding:6px}.nav button{font-size:9px}.nav button span{font-size:16px}.page .grid.modules,.page .grid.stats{grid-template-columns:repeat(4,minmax(0,1fr))}}
+.landscape-hint{display:none;position:fixed;z-index:40;right:10px;top:10px;background:#071713e8;color:#e8d5a4;border:1px solid #dfbd7080;border-radius:20px;padding:6px 10px;font-size:10px;pointer-events:none}
+@media(orientation:portrait){.landscape-hint{display:block}}
 </style></head>
 <body>
 <section class="gate" id="gate"><div class="gate-inner"><div class="gate-kicker">YOUR PERSONAL DIGITAL UNIVERSE</div><div class="scene" id="worldScene" role="button" tabindex="0" aria-label="لمس کره برای ورود به دنیای AMIR"><div class="room-floor"></div><div class="room-wall"></div><canvas id="world3d" aria-label="کرهٔ سه‌بعدی AMIR"></canvas><div class="ring"></div><div class="ring r2"></div><div class="ring r3"></div><div class="planet"></div><div class="orb-hint">لمس کره برای ورود <span>✦</span></div></div><h1>به دنیای <span style="color:#dfbd70">AMIR</span> خوش آمدی</h1><p>یک جهان شخصی؛ هر بخش، اتاقی سه‌بعدی برای زندگی، کار و یادگیری.</p></div></section>
-<div class="app">
+<div class="landscape-hint">برای نمای کامل، موبایل را افقی بچرخان</div><div class="room-label" id="roomLabel">اتاق فرماندهی</div><div class="app">
 <header class="top"><div class="brand"><div class="mark">A</div><div><b>AMIR</b><small>دنیای دیجیتالی شخصی</small></div></div><div class="top-actions"><button class="iconbtn" id="backupTop" title="پشتیبان">⇩</button><button class="iconbtn" id="openWorld" title="دنیای سه‌بعدی">◎</button></div></header>
 <main>
 <section class="page active" id="home">
@@ -90,7 +112,8 @@ function fa(n){return Number(n||0).toLocaleString('fa-AF');}
 function money(n){return fa(n)+' افغانی';}
 function safe(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
 function empty(el,msg){$(el).innerHTML='<div class="empty">'+msg+'</div>';}
-function showPage(id){document.querySelectorAll('.page').forEach(p=>p.classList.toggle('active',p.id===id));document.querySelectorAll('.nav [data-page]').forEach(b=>b.classList.toggle('active',b.dataset.page===id));window.scrollTo({top:0,behavior:'smooth'});}
+const roomNames={home:'اتاق فرماندهی',life:'اتاق زندگی و برنامه‌ها',finance:'اتاق امور مالی',business:'اتاق تجارت',assistant:'اتاق هوش مصنوعی',characters:'اتاق شخصیت‌های تخصصی',vault:'اتاق اسناد خصوصی',learning:'اتاق یادگیری',security:'اتاق امنیت'};
+function showPage(id){document.querySelectorAll('.page').forEach(p=>p.classList.toggle('active',p.id===id));document.querySelectorAll('.nav [data-page]').forEach(b=>b.classList.toggle('active',b.dataset.page===id));const tag=$('roomLabel');tag.textContent=roomNames[id]||'دنیای AMIR';tag.classList.add('on');clearTimeout(window.__roomTagTimer);window.__roomTagTimer=setTimeout(()=>tag.classList.remove('on'),1800);window.scrollTo({top:0,behavior:'smooth'});}
 document.querySelectorAll('[data-page]').forEach(b=>b.addEventListener('click',()=>showPage(b.dataset.page)));
 function enterWorld(){const g=$('gate');g.classList.add('entering');setTimeout(()=>{g.classList.add('hidden');g.classList.remove('entering');showPage('home');},420);}
 $('worldScene').addEventListener('click',enterWorld);
@@ -122,6 +145,14 @@ $('restoreFile').onchange=async e=>{let f=e.target.files[0];if(!f)return;try{let
 addEventListener('online',render);addEventListener('offline',render);
 if('serviceWorker'in navigator)addEventListener('load',()=>navigator.serviceWorker.register('./sw.js?v=5').catch(()=>{}));
 render();
+
+/* Landscape preference + side-swipe room navigation */
+(async()=>{try{if(screen.orientation&&screen.orientation.lock)await screen.orientation.lock('landscape');}catch(e){}})();
+let swipeX=0,swipeY=0;
+const roomOrder=['home','life','finance','business','assistant','characters','vault','learning','security'];
+document.addEventListener('touchstart',e=>{if(!e.touches||e.touches.length!==1)return;swipeX=e.touches[0].clientX;swipeY=e.touches[0].clientY;},{passive:true});
+document.addEventListener('touchend',e=>{if(!e.changedTouches||!swipeX)return;const dx=e.changedTouches[0].clientX-swipeX,dy=e.changedTouches[0].clientY-swipeY;swipeX=0;if(Math.abs(dx)<95||Math.abs(dx)<Math.abs(dy)*1.25)return;const current=document.querySelector('.page.active');if(!current)return;const i=roomOrder.indexOf(current.id),next=dx<0?Math.min(roomOrder.length-1,i+1):Math.max(0,i-1);if(next!==i)showPage(roomOrder[next]);},{passive:true});
+
 </script>
 <script>
 (()=> {
