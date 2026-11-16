@@ -1,0 +1,20 @@
+{
+  "name": "AMIR - دنیای دیجیتالی من",
+  "short_name": "AMIR",
+  "description": "دنیای دیجیتالی شخصی تو",
+  "lang": "fa",
+  "dir": "rtl",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#071713",
+  "theme_color": "#071713",
+  "icons": [
+    {
+      "src": "./icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
