@@ -133,7 +133,7 @@ html,body{overscroll-behavior:none}body{overflow-x:hidden}
 <div class="panel"><h3>گفت‌وگوی هوشمند AMIR</h3><p class="muted">پیام‌ها فقط پس از لمس «ارسال» به سرویس هوش مصنوعی فرستاده می‌شوند. کلید API در این صفحه ذخیره نمی‌شود.</p>
 <label class="field"><span>شخصیت دستیار</span><select id="aiPersona"><option value="general">دستیار مرکزی AMIR</option><option value="mobile">آموزگار انجنیری موبایل</option><option value="business">مشاور تجارت و حسابداری</option><option value="learning">آموزگار کمپیوتر و برنامه‌نویسی</option><option value="wellness">همراه سلامت عمومی</option><option value="cooking">دستیار آشپزی</option></select></label><div id="aiChat" role="log" aria-live="polite" style="display:grid;gap:10px;max-height:42vh;overflow:auto;padding:4px 2px"><div class="notice">سلام! من هستهٔ گفت‌وگوی AMIR هستم. برای شروع، نشانی سرویس امن را تنظیم کن.</div></div>
 <label class="field"><span>پیام تو</span><textarea id="aiMessage" placeholder="هر چیزی می‌خواهی بپرس..." rows="3"></textarea></label>
-<div class="actions"><button class="primary" id="aiSend">ارسال پیام</button><button class="secondary" id="aiClear">پاک‌کردن گفت‌وگو</button></div><p class="muted" id="aiFeedback" aria-live="polite"></p></div>
+<div class="actions"><button class="primary" id="aiSend">ارسال پیام</button><button class="secondary" id="aiVoice" type="button">🎙️ گفتار به متن</button><button class="secondary" id="aiClear">پاک‌کردن گفت‌وگو</button></div><p class="muted">میکروفون فقط پس از لمس دکمه فعال می‌شود؛ متن تشخیص‌داده‌شده پیش از ارسال قابل ویرایش است.</p><p class="muted" id="aiFeedback" aria-live="polite"></p></div>
 <div class="panel"><h3>اتصال امن هوش مصنوعی</h3><p class="muted">نشانی Worker خود را این‌جا وارد کن. این نسخه از Workers AI کلادفلر استفاده می‌کند و به کلید API جداگانه نیاز ندارد.</p>
 <label class="field"><span>نشانی سرویس امن (Worker URL)</span><input id="aiEndpoint" inputmode="url" placeholder="https://your-amir-ai.workers.dev"></label>
 <button class="primary" id="aiSaveEndpoint">ذخیره نشانی و آزمایش اتصال</button><div class="notice">برای فعال‌شدن پاسخ واقعی، فایل AMIR/ai-worker.js را در Cloudflare Worker نشر کن و در Settings → Bindings یک Workers AI binding با نام AI اضافه کن. سهم رایگان Workers AI روزانه ۱۰٬۰۰۰ Neurons است؛ پس از حد رایگان، در پلن Free درخواست‌ها متوقف می‌شوند.</div></div>
@@ -313,6 +313,25 @@ if(THREE)(()=>{
   }catch(err){history.pop();setFeedback('اتصال انجام نشد: '+(err.message||'خطای ناشناخته')+'. نشانی Worker و تنظیمات اتصال Workers AI و نشانی Worker را بررسی کن.');status('اتصال ناموفق');}
   finally{busy=false;$ai('aiSend').disabled=false;$ai('aiSend').textContent='ارسال پیام';}
  };
+ const voiceButton=$ai('aiVoice');
+ const SpeechAPI=window.SpeechRecognition||window.webkitSpeechRecognition;
+ if(voiceButton){
+  if(!SpeechAPI){voiceButton.disabled=true;voiceButton.textContent='گفتار در این مرورگر پشتیبانی نمی‌شود';}
+  else{
+   let recognition=null,listening=false;
+   voiceButton.onclick=()=>{
+    if(listening){try{recognition.stop();}catch(e){}return;}
+    try{
+     recognition=new SpeechAPI();recognition.lang='fa-IR';recognition.continuous=false;recognition.interimResults=false;
+     recognition.onstart=()=>{listening=true;voiceButton.textContent='⏹ توقف شنیدن';setFeedback('در حال شنیدن؛ پس از پایان متن را بررسی کن.');};
+     recognition.onresult=e=>{const spoken=Array.from(e.results).map(x=>x[0].transcript).join(' ').trim();if(spoken){$ai('aiMessage').value=($ai('aiMessage').value+' '+spoken).trim();$ai('aiMessage').focus();setFeedback('گفتار به متن تبدیل شد؛ پیش از ارسال می‌توانی اصلاحش کنی.');}};
+     recognition.onerror=e=>setFeedback('خطای میکروفون یا تشخیص گفتار: '+e.error);
+     recognition.onend=()=>{listening=false;voiceButton.textContent='🎙️ گفتار به متن';};
+     recognition.start();
+    }catch(e){listening=false;voiceButton.textContent='🎙️ گفتار به متن';setFeedback('شروع میکروفون ممکن نشد؛ اجازهٔ میکروفون مرورگر را بررسی کن.');}
+   };
+  }
+ }
  $ai('aiMessage').addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();$ai('aiSend').click();}});
 })();
 </script>
