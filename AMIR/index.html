@@ -131,7 +131,7 @@ html,body{overscroll-behavior:none}body{overflow-x:hidden}
 <div class="panel"><h3>ثبت پیگیری تجاری</h3><label class="field"><span>موضوع</span><input id="bizTitle" placeholder="مثلاً سفارش پرزه"></label><label class="field"><span>جزئیات</span><textarea id="bizDetail" placeholder="نام مشتری، جنس یا اقدام بعدی..."></textarea></label><button class="primary" id="addBiz">ذخیره پیگیری</button><div class="list" id="bizList"></div></div></section>
 <section class="page" id="assistant"><div class="section-head"><div><span class="eyebrow">AMIR AI BRAIN</span><h2>دستیار هوشمند</h2></div><span class="pill" id="aiStatus">اتصال تنظیم نشده</span></div>
 <div class="panel"><h3>گفت‌وگوی هوشمند AMIR</h3><p class="muted">پیام‌ها فقط پس از لمس «ارسال» به سرویس هوش مصنوعی فرستاده می‌شوند. کلید API در این صفحه ذخیره نمی‌شود.</p>
-<div id="aiChat" role="log" aria-live="polite" style="display:grid;gap:10px;max-height:42vh;overflow:auto;padding:4px 2px"><div class="notice">سلام! من هستهٔ گفت‌وگوی AMIR هستم. برای شروع، نشانی سرویس امن را تنظیم کن.</div></div>
+<label class="field"><span>شخصیت دستیار</span><select id="aiPersona"><option value="general">دستیار مرکزی AMIR</option><option value="mobile">آموزگار انجنیری موبایل</option><option value="business">مشاور تجارت و حسابداری</option><option value="learning">آموزگار کمپیوتر و برنامه‌نویسی</option><option value="wellness">همراه سلامت عمومی</option><option value="cooking">دستیار آشپزی</option></select></label><div id="aiChat" role="log" aria-live="polite" style="display:grid;gap:10px;max-height:42vh;overflow:auto;padding:4px 2px"><div class="notice">سلام! من هستهٔ گفت‌وگوی AMIR هستم. برای شروع، نشانی سرویس امن را تنظیم کن.</div></div>
 <label class="field"><span>پیام تو</span><textarea id="aiMessage" placeholder="هر چیزی می‌خواهی بپرس..." rows="3"></textarea></label>
 <div class="actions"><button class="primary" id="aiSend">ارسال پیام</button><button class="secondary" id="aiClear">پاک‌کردن گفت‌وگو</button></div><p class="muted" id="aiFeedback" aria-live="polite"></p></div>
 <div class="panel"><h3>اتصال امن هوش مصنوعی</h3><p class="muted">نشانی Worker امنی را که راه‌اندازی می‌کنی این‌جا وارد کن. کلید محرمانه فقط در تنظیمات Worker می‌ماند، نه در موبایل.</p>
@@ -293,7 +293,7 @@ if(THREE)(()=>{
  function getEndpoint(){return ($ai('aiEndpoint').value||'').trim().replace(/\\/+$/,'');}
  function validEndpoint(v){try{const u=new URL(v);return u.protocol==='https:'&&u.hostname.endsWith('.workers.dev')||u.protocol==='https:'&&u.hostname.includes('.');}catch(e){return false;}}
  const saved=localStorage.getItem(endpointKey)||'';$ai('aiEndpoint').value=saved;if(saved)status('نشانی ذخیره شده؛ اتصال آزمایش نشده');
- $ai('aiSaveEndpoint').onclick=async()=>{const url=getEndpoint();if(!validEndpoint(url)){setFeedback('یک نشانی معتبر HTTPS برای سرویس Worker وارد کن.');return;}localStorage.setItem(endpointKey,url);status('نشانی ذخیره شد؛ آمادهٔ آزمایش');setFeedback('برای آزمایش، یک پیام کوتاه بفرست.');};
+ $ai('aiSaveEndpoint').onclick=async()=>{const url=getEndpoint();if(!validEndpoint(url)){setFeedback('یک نشانی معتبر HTTPS برای سرویس Worker وارد کن.');return;}localStorage.setItem(endpointKey,url);status('در حال آزمایش اتصال...');setFeedback('در حال بررسی سرویس امن...');try{const r=await fetch(url,{method:'GET'});const d=await r.json();if(!r.ok||!d.ready)throw Error(d.error||'پاسخ معتبر دریافت نشد');status('سرویس در دسترس است',true);setFeedback('اتصال Worker برقرار شد. حالا می‌توانی گفت‌وگو را شروع کنی.');}catch(e){status('اتصال ناموفق');setFeedback('نشانی ذخیره شد؛ اما سرویس پاسخ نداد. مطمئن شو Worker نشر شده است. '+(e.message||''));}};
  $ai('aiClear').onclick=()=>{history.length=0;$ai('aiChat').replaceChildren();setFeedback('گفت‌وگو پاک شد.');};
  $ai('aiSend').onclick=async()=>{
   const text=$ai('aiMessage').value.trim();if(!text||busy)return;
@@ -304,7 +304,7 @@ if(THREE)(()=>{
   if(!navigator.onLine){setFeedback('برای گفت‌وگوی هوشمند، اینترنت لازم است.');return;}
   busy=true;$ai('aiSend').disabled=true;$ai('aiSend').textContent='در حال پاسخ...';$ai('aiMessage').value='';bubble('user',text);history.push({role:'user',content:text});setFeedback('درخواست به سرویس امن فرستاده شد...');
   try{
-   const response=await fetch(endpoint+'/chat',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({messages:history.slice(-16)})});
+   const response=await fetch(endpoint+'/chat',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({messages:history.slice(-16),persona:$ai('aiPersona').value})});
    const data=await response.json().catch(()=>({}));
    if(!response.ok)throw Error(data.error||('خطای سرویس: '+response.status));
    if(!data.reply)throw Error('پاسخ معتبر از سرویس دریافت نشد.');
