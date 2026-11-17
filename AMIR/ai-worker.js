@@ -26,14 +26,16 @@ export default {
     if (!m || !["user","assistant"].includes(m.role) || typeof m.content !== "string" || !m.content.trim() || m.content.length > 6000) throw new Error("پیام نامعتبر یا بیش از حد طولانی است.");
     return {role:m.role,content:m.content};
    });
-   const personas = {general:"نقش تو دستیار مرکزی و هماهنگ‌کنندهٔ AMIR است.",mobile:"نقش تو آموزگار انجنیری موبایل است. عیب‌یابی را مرحله‌به‌مرحله انجام بده، پیش از هر اقدام خطر برق و اتصال کوتاه را گوشزد کن و از حدس دربارهٔ پین‌ها یا مسیرهای نامعلوم خودداری کن.",business:"نقش تو مشاور تجارت و حسابداری است. محاسبات را شفاف نشان بده و خرید، فروش، مفاد و قرض را از هم جدا کن.",learning:"نقش تو آموزگار کمپیوتر و برنامه‌نویسی است. از سطح مبتدی شروع کن و هر بار یک گام عملی بده.",wellness:"نقش تو همراه آموزش سلامت عمومی است. تشخیص قطعی یا نسخهٔ شخصی نده و در موارد خطرناک مراجعه به متخصص را توصیه کن.",cooking:"نقش تو دستیار آشپزی است. دستورها را ساده، اقتصادی و مرحله‌به‌مرحله بنویس."};\n   const persona = personas[body.persona] || personas.general;\n   const apiResponse = await fetch("https://api.openai.com/v1/responses",{
+   const personas = {general:"نقش تو دستیار مرکزی و هماهنگ‌کنندهٔ AMIR است.",mobile:"نقش تو آموزگار انجنیری موبایل است. عیب‌یابی را مرحله‌به‌مرحله انجام بده، پیش از هر اقدام خطر برق و اتصال کوتاه را گوشزد کن و از حدس دربارهٔ پین‌ها یا مسیرهای نامعلوم خودداری کن.",business:"نقش تو مشاور تجارت و حسابداری است. محاسبات را شفاف نشان بده و خرید، فروش، مفاد و قرض را از هم جدا کن.",learning:"نقش تو آموزگار کمپیوتر و برنامه‌نویسی است. از سطح مبتدی شروع کن و هر بار یک گام عملی بده.",wellness:"نقش تو همراه آموزش سلامت عمومی است. تشخیص قطعی یا نسخهٔ شخصی نده و در موارد خطرناک مراجعه به متخصص را توصیه کن.",cooking:"نقش تو دستیار آشپزی است. دستورها را ساده، اقتصادی و مرحله‌به‌مرحله بنویس."};
+   const persona = personas[body.persona] || personas.general;
+   const apiResponse = await fetch("https://api.openai.com/v1/responses",{
     method:"POST",
     headers:{"Authorization":"Bearer "+env.OPENAI_API_KEY,"Content-Type":"application/json"},
-    body:JSON.stringify({model:env.OPENAI_MODEL || "gpt-4.1-mini",instructions:SYSTEM_PROMPT+"\\n\\n"+persona,input:messages,max_output_tokens:1200})
+    body:JSON.stringify({model:env.OPENAI_MODEL || "gpt-4.1-mini",instructions:SYSTEM_PROMPT+"\n\n"+persona,input:messages,max_output_tokens:1200})
    });
    const result = await apiResponse.json();
    if (!apiResponse.ok) return Response.json({error:result.error?.message || "خطا از سرویس هوش مصنوعی."},{status:apiResponse.status,headers});
-   const reply = (result.output || []).flatMap(item=>item.content || []).filter(item=>item.type==="output_text").map(item=>item.text).join("\\n").trim();
+   const reply = (result.output || []).flatMap(item=>item.content || []).filter(item=>item.type==="output_text").map(item=>item.text).join("\n").trim();
    if (!reply) return Response.json({error:"پاسخ متنی دریافت نشد."},{status:502,headers});
    return Response.json({reply},{headers});
   } catch(error) {
