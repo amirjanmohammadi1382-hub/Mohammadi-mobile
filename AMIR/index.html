@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#071713"><meta name="description" content="AMIR؛ فضای دیجیتالی شخصی برای زندگی، کار و یادگیری">
-<link rel="manifest" href="./manifest.json?v=8"><link rel="icon" href="./icon.svg">
+<link rel="manifest" href="./manifest.json?v=9"><link rel="icon" href="./icon.svg">
 <title>AMIR | دنیای شخصی من</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;600;700;800&display=swap');
@@ -129,7 +129,15 @@ html,body{overscroll-behavior:none}body{overflow-x:hidden}
 <div class="panel"><h3>ثبت تراکنش</h3><label class="field"><span>نوع</span><select id="finType"><option value="in">درآمد</option><option value="out">مصرف</option></select></label><label class="field"><span>شرح</span><input id="finTitle" placeholder="مثلاً معاش یا خرید"></label><label class="field"><span>مبلغ (افغانی)</span><input id="finAmount" type="number" min="1" inputmode="decimal" placeholder="0"></label><button class="primary" id="addFinance">ثبت تراکنش</button><div class="list" id="financeList"></div></div></section>
 <section class="page" id="business"><div class="section-head"><div><span class="eyebrow">کار و تجارت</span><h2>مرکز تجارت</h2></div></div><div class="notice">این قسمت فعلاً برای ثبت برنامه و پیگیری کارهای تجاری است. سیستم حسابداری کامل محمدی موبایل در صفحهٔ جداگانهٔ خودش باقی می‌ماند.</div>
 <div class="panel"><h3>ثبت پیگیری تجاری</h3><label class="field"><span>موضوع</span><input id="bizTitle" placeholder="مثلاً سفارش پرزه"></label><label class="field"><span>جزئیات</span><textarea id="bizDetail" placeholder="نام مشتری، جنس یا اقدام بعدی..."></textarea></label><button class="primary" id="addBiz">ذخیره پیگیری</button><div class="list" id="bizList"></div></div></section>
-<section class="page" id="assistant"><div class="section-head"><div><span class="eyebrow">AMIR AI BRAIN</span><h2>دستیار هوشمند</h2></div></div><div class="panel"><h3>مرکز دستیار</h3><p class="muted">در این نسخه، این صفحه محل آماده‌سازی دستیار مرکزی است. برای پاسخ هوشمند واقعی باید سرویس AI و اتصال امن با اجازهٔ تو پیکربندی شود.</p><div class="notice">هیچ میکروفونی در پس‌زمینه فعال نیست و هیچ گفت‌وگویی به سرور فرستاده نمی‌شود.</div><label class="field"><span>یادداشت یا درخواست برای ذخیره در کارهای روزانه</span><textarea id="assistantText" placeholder="درخواستت را این‌جا بنویس..."></textarea></label><button class="primary" id="assistantSave">فرستادن به یادداشت‌ها</button></div><div class="panel"><h3>قابلیت‌های برنامه‌ریزی‌شده</h3><div class="list"><div class="item"><div><b>گفت‌وگوی هوشمند</b><small>نیازمند اتصال به سرویس AI</small></div><span class="pill">بعداً</span></div><div class="item"><div><b>فرمان صوتی</b><small>نیازمند پشتیبانی مرورگر و اجازهٔ میکروفون</small></div><span class="pill">بعداً</span></div><div class="item"><div><b>هماهنگی بین شخصیت‌ها</b><small>پس از ساخت هستهٔ مرکزی</small></div><span class="pill">بعداً</span></div></div></div></section>
+<section class="page" id="assistant"><div class="section-head"><div><span class="eyebrow">AMIR AI BRAIN</span><h2>دستیار هوشمند</h2></div><span class="pill" id="aiStatus">اتصال تنظیم نشده</span></div>
+<div class="panel"><h3>گفت‌وگوی هوشمند AMIR</h3><p class="muted">پیام‌ها فقط پس از لمس «ارسال» به سرویس هوش مصنوعی فرستاده می‌شوند. کلید API در این صفحه ذخیره نمی‌شود.</p>
+<div id="aiChat" role="log" aria-live="polite" style="display:grid;gap:10px;max-height:42vh;overflow:auto;padding:4px 2px"><div class="notice">سلام! من هستهٔ گفت‌وگوی AMIR هستم. برای شروع، نشانی سرویس امن را تنظیم کن.</div></div>
+<label class="field"><span>پیام تو</span><textarea id="aiMessage" placeholder="هر چیزی می‌خواهی بپرس..." rows="3"></textarea></label>
+<div class="actions"><button class="primary" id="aiSend">ارسال پیام</button><button class="secondary" id="aiClear">پاک‌کردن گفت‌وگو</button></div><p class="muted" id="aiFeedback" aria-live="polite"></p></div>
+<div class="panel"><h3>اتصال امن هوش مصنوعی</h3><p class="muted">نشانی Worker امنی را که راه‌اندازی می‌کنی این‌جا وارد کن. کلید محرمانه فقط در تنظیمات Worker می‌ماند، نه در موبایل.</p>
+<label class="field"><span>نشانی سرویس امن (Worker URL)</span><input id="aiEndpoint" inputmode="url" placeholder="https://your-amir-ai.workers.dev"></label>
+<button class="primary" id="aiSaveEndpoint">ذخیره نشانی و آزمایش اتصال</button><div class="notice">برای فعال‌شدن پاسخ واقعی، فایل AMIR/ai-worker.js باید روی Cloudflare Workers نشر شود و کلید API به‌صورت Secret در همان سرویس تنظیم گردد.</div></div>
+<div class="panel"><h3>حریم خصوصی</h3><p class="muted">گفت‌وگوی این نشست در حافظهٔ موقت همین صفحه نگهداری می‌شود و در پشتیبان اطلاعات شخصی ثبت نمی‌شود. با بستن صفحه یا پاک‌کردن گفت‌وگو، تاریخچهٔ محلی این نشست از بین می‌رود. برای استفاده از AI، مجوز «اتصال دستیار هوشمند» را در بخش امنیت روی «اجازه دادن» یا «فقط یک‌بار» بگذار.</p></div></section>
 <section class="page" id="characters"><div class="section-head"><div><span class="eyebrow">دستیاران تخصصی</span><h2>شخصیت‌ها</h2></div></div><div class="notice">این‌ها نقش‌های نرم‌افزاری پیشنهادی‌اند، نه انسان واقعی یا دارای احساس مستقل. هر شخصیت در نسخهٔ کامل با مجوز جداگانه فعال می‌شود.</div><div class="list"><div class="item"><div><b>مدیر شخصی</b><small>برنامه‌ریزی، یادآوری و نظم روزانه</small></div><span class="pill">طرح</span></div><div class="item"><div><b>آموزگار تکنالوژی</b><small>کمپیوتر، برنامه‌نویسی و انجنیری موبایل</small></div><span class="pill">طرح</span></div><div class="item"><div><b>مشاور تجارت</b><small>تحلیل فروش، مشتری و برنامهٔ کاری</small></div><span class="pill">طرح</span></div><div class="item"><div><b>همراه سلامت عمومی</b><small>اطلاعات آموزشی؛ نه تشخیص و درمان قطعی</small></div><span class="pill">طرح</span></div><div class="item"><div><b>دستیار آشپزی</b><small>غذا، دستور پخت و فهرست خرید</small></div><span class="pill">طرح</span></div></div></section>
 <section class="page" id="vault"><div class="section-head"><div><span class="eyebrow">حریم خصوصی</span><h2>گاوصندوق و اسناد</h2></div></div><div class="notice">فعلاً این بخش فقط معرفی و برنامه‌ریزی است. رمز عبور، شمارهٔ کارت، تذکره یا اسناد حساس را در این نسخه وارد نکن؛ ذخیره‌سازی رمزگذاری‌شده هنوز پیاده‌سازی نشده است.</div><div class="panel"><h3>طرح حفاظت اطلاعات</h3><div class="list"><div class="item"><div><b>قفل با رمز یا اثر انگشت</b><small>نیازمند اپلیکیشن اندروید بومی</small></div><span class="pill">طرح</span></div><div class="item"><div><b>رمزگذاری اسناد</b><small>نیازمند پیاده‌سازی رمزنگاری و مدیریت کلید</small></div><span class="pill">طرح</span></div><div class="item"><div><b>پشتیبان ابری</b><small>فقط با اجازهٔ جداگانهٔ کاربر</small></div><span class="pill">طرح</span></div></div></div></section>
 <section class="page" id="learning"><div class="section-head"><div><span class="eyebrow">رشد مهارت</span><h2>یادگیری و دانش</h2></div></div><div class="list"><div class="item"><div><b>انجنیری موبایل</b><small>قطعات، مسیرها، عیب‌یابی و ترمیم</small></div><span class="pill">آمادهٔ برنامه‌ریزی</span></div><div class="item"><div><b>کمپیوتر و برنامه‌نویسی</b><small>از مبانی تا ساخت اپلیکیشن</small></div><span class="pill">آمادهٔ برنامه‌ریزی</span></div><div class="item"><div><b>مدیریت تجارت</b><small>حسابداری، فروش و تحلیل</small></div><span class="pill">آمادهٔ برنامه‌ریزی</span></div></div><div class="panel"><h3>هدف یادگیری</h3><label class="field"><span>موضوعی که می‌خواهی یاد بگیری</span><input id="learnText" placeholder="مثلاً آموزش مدار شارژ"></label><button class="primary" id="addLearn">ثبت هدف</button><div class="list" id="learnList"></div></div></section>
@@ -141,7 +149,7 @@ html,body{overscroll-behavior:none}body{overflow-x:hidden}
 const $=id=>document.getElementById(id),KEY='amir_workspace_v3';
 const blank={tasks:[],notes:[],finance:[],business:[],learning:[],permissions:{ai:'once',microphone:'deny',cloud:'deny',gmail:'deny',files:'deny'}};
 let state;try{state=Object.assign({},blank,JSON.parse(localStorage.getItem(KEY)||'{}'));state.permissions=Object.assign({},blank.permissions,state.permissions||{});}catch(e){state=JSON.parse(JSON.stringify(blank));}
-function save(){localStorage.setItem(KEY,JSON.stringify(state));render();}
+function save(){localStorage.setItem(KEY,JSON.stringify(state));window.__AMIR_STATE__=state;render();}
 function fa(n){return Number(n||0).toLocaleString('fa-AF');}
 function money(n){return fa(n)+' افغانی';}
 function safe(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
@@ -181,8 +189,8 @@ function backup(){let blob=new Blob([JSON.stringify(state,null,2)],{type:'applic
 $('backup').onclick=backup;$('backupTop').onclick=backup;$('restoreBtn').onclick=()=>$('restoreFile').click();
 $('restoreFile').onchange=async e=>{let f=e.target.files[0];if(!f)return;try{let x=JSON.parse(await f.text());if(!x||!Array.isArray(x.tasks)||!Array.isArray(x.notes)||!Array.isArray(x.finance))throw Error();state=Object.assign({},blank,x);state.permissions=Object.assign({},blank.permissions,x.permissions||{});save();$('backupStatus').textContent='بازیابی موفق بود.';}catch(err){alert('فایل پشتیبان معتبر نیست.');}e.target.value='';};
 addEventListener('online',render);addEventListener('offline',render);
-if('serviceWorker'in navigator)addEventListener('load',()=>navigator.serviceWorker.register('./sw.js?v=8').catch(()=>{}));
-render();
+if('serviceWorker'in navigator)addEventListener('load',()=>navigator.serviceWorker.register('./sw.js?v=9').catch(()=>{}));
+window.__AMIR_STATE__=state;render();
 
 /* Landscape preference + side-swipe room navigation */
 (async()=>{try{if(screen.orientation&&screen.orientation.lock)await screen.orientation.lock('landscape');}catch(e){}})();
@@ -272,4 +280,40 @@ if(THREE)(()=>{
  canvas.addEventListener('touchmove',e=>{if(e.touches.length===2&&pinchStart){const d=Math.hypot(e.touches[0].clientX-e.touches[1].clientX,e.touches[0].clientY-e.touches[1].clientY);camera.fov=THREE.MathUtils.clamp(fovStart*pinchStart/d,42,82);camera.updateProjectionMatrix();e.preventDefault();}},{passive:false});
  document.getElementById('worldHomeBtn').onclick=()=>{restoreParked();openRoom('home');};
 })();
-</script></body></html>
+</script>
+<script>
+(()=> {
+ const endpointKey='amir_ai_endpoint_v1';
+ const $ai=id=>document.getElementById(id);
+ const history=[];
+ let busy=false;
+ function status(text,good=false){const el=$ai('aiStatus');if(el){el.textContent=text;el.style.color=good?'#aee8c9':'#f4dfad';}}
+ function bubble(role,text){const box=document.createElement('div');box.style.cssText='padding:11px 13px;border:1px solid '+(role==='user'?'#9b8248':'#397254')+';border-radius:14px;background:'+(role==='user'?'#302817':'#0c261b')+';white-space:pre-wrap;line-height:1.9;font-size:12px;max-width:96%;justify-self:'+(role==='user'?'start':'stretch');box.textContent=(role==='user'?'تو: ':'AMIR: ')+text;$ai('aiChat').appendChild(box);$ai('aiChat').scrollTop=$ai('aiChat').scrollHeight;}
+ function setFeedback(t){$ai('aiFeedback').textContent=t;}
+ function getEndpoint(){return ($ai('aiEndpoint').value||'').trim().replace(/\\/+$/,'');}
+ function validEndpoint(v){try{const u=new URL(v);return u.protocol==='https:'&&u.hostname.endsWith('.workers.dev')||u.protocol==='https:'&&u.hostname.includes('.');}catch(e){return false;}}
+ const saved=localStorage.getItem(endpointKey)||'';$ai('aiEndpoint').value=saved;if(saved)status('نشانی ذخیره شده؛ اتصال آزمایش نشده');
+ $ai('aiSaveEndpoint').onclick=async()=>{const url=getEndpoint();if(!validEndpoint(url)){setFeedback('یک نشانی معتبر HTTPS برای سرویس Worker وارد کن.');return;}localStorage.setItem(endpointKey,url);status('نشانی ذخیره شد؛ آمادهٔ آزمایش');setFeedback('برای آزمایش، یک پیام کوتاه بفرست.');};
+ $ai('aiClear').onclick=()=>{history.length=0;$ai('aiChat').replaceChildren();setFeedback('گفت‌وگو پاک شد.');};
+ $ai('aiSend').onclick=async()=>{
+  const text=$ai('aiMessage').value.trim();if(!text||busy)return;
+  const permission=(window.__AMIR_STATE__&&window.__AMIR_STATE__.permissions&&window.__AMIR_STATE__.permissions.ai)||'once';
+  if(permission==='deny'){setFeedback('مجوز اتصال بسته است. در بخش امنیت، برای هوش مصنوعی اجازه بده.');return;}
+  const endpoint=localStorage.getItem(endpointKey)||getEndpoint();
+  if(!endpoint){setFeedback('اول نشانی سرویس امن را ذخیره کن.');return;}
+  if(!navigator.onLine){setFeedback('برای گفت‌وگوی هوشمند، اینترنت لازم است.');return;}
+  busy=true;$ai('aiSend').disabled=true;$ai('aiSend').textContent='در حال پاسخ...';$ai('aiMessage').value='';bubble('user',text);history.push({role:'user',content:text});setFeedback('درخواست به سرویس امن فرستاده شد...');
+  try{
+   const response=await fetch(endpoint+'/chat',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({messages:history.slice(-16)})});
+   const data=await response.json().catch(()=>({}));
+   if(!response.ok)throw Error(data.error||('خطای سرویس: '+response.status));
+   if(!data.reply)throw Error('پاسخ معتبر از سرویس دریافت نشد.');
+   history.push({role:'assistant',content:data.reply});bubble('assistant',data.reply);status('متصل و آماده',true);setFeedback('پاسخ دریافت شد.');
+   if(permission==='once'&&window.__AMIR_STATE__){window.__AMIR_STATE__.permissions.ai='deny';localStorage.setItem('amir_workspace_v3',JSON.stringify(window.__AMIR_STATE__));setFeedback('مجوز یک‌بار مصرف شد؛ برای پیام بعدی دوباره اجازه بده.');}
+  }catch(err){history.pop();setFeedback('اتصال انجام نشد: '+(err.message||'خطای ناشناخته')+'. نشانی Worker و تنظیمات کلید API را بررسی کن.');status('اتصال ناموفق');}
+  finally{busy=false;$ai('aiSend').disabled=false;$ai('aiSend').textContent='ارسال پیام';}
+ };
+ $ai('aiMessage').addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();$ai('aiSend').click();}});
+})();
+</script>
+</body></html>
